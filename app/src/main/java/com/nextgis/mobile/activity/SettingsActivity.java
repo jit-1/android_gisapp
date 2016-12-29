@@ -495,7 +495,8 @@ public class SettingsActivity
         editor.remove(SettingsConstantsUI.KEY_PREF_SHOW_GEO_DIALOG);
         editor.remove(KEY_PREF_GA);
 
-        File defaultPath = activity.getExternalFilesDir(KEY_PREF_MAP);
+        //File defaultPath = activity.getExternalFilesDir(KEY_PREF_MAP);
+        File defaultPath = new File(SettingsConstants.DMS_PATH, SettingsConstants.KEY_PREF_MAP);
         if (defaultPath == null)
             defaultPath = new File(activity.getFilesDir(), KEY_PREF_MAP);
 
