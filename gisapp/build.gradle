@@ -41,7 +41,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
-                    output.outputFile = new File(output.outputFile.parent, "ngmobile-" + defaultConfig.versionName + ".apk")
+                    output.outputFile = new File(output.outputFile.parent, "disarm_ngmobile-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
