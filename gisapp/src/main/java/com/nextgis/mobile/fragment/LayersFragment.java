@@ -144,26 +144,26 @@ public class LayersFragment
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         IGISApplication application = (IGISApplication) getActivity().getApplication();
-        switch (item.getItemId()) {
-            case R.id.menu_new:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_LOCAL);
-                Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
-                startActivity(intentNewLayer);
-                return true;
-            case R.id.menu_add_local:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_IMPORT);
-                ((MainActivity) getActivity()).addLocalLayer();
-                return true;
-            case R.id.menu_add_remote:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_GEOSERVICE);
-                ((MainActivity) getActivity()).addRemoteLayer();
-                return true;
-            case R.id.menu_add_ngw:
-                application.sendEvent(GA_LAYER, GA_CREATE, GA_NGW);
-                ((MainActivity) getActivity()).addNGWLayer();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        int i = item.getItemId();
+        if (i == R.id.menu_new) {
+            application.sendEvent(GA_LAYER, GA_CREATE, GA_LOCAL);
+            Intent intentNewLayer = new Intent(getActivity(), CreateVectorLayerActivity.class);
+            startActivity(intentNewLayer);
+            return true;
+        } else if (i == R.id.menu_add_local) {
+            application.sendEvent(GA_LAYER, GA_CREATE, GA_IMPORT);
+            ((MainActivity) getActivity()).addLocalLayer();
+            return true;
+        } else if (i == R.id.menu_add_remote) {
+            application.sendEvent(GA_LAYER, GA_CREATE, GA_GEOSERVICE);
+            ((MainActivity) getActivity()).addRemoteLayer();
+            return true;
+        } else if (i == R.id.menu_add_ngw) {
+            application.sendEvent(GA_LAYER, GA_CREATE, GA_NGW);
+            ((MainActivity) getActivity()).addNGWLayer();
+            return true;
+        } else {
+            return super.onContextItemSelected(item);
         }
     }
 
@@ -461,23 +461,23 @@ public class LayersFragment
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sync:
-                for (Account account : mAccounts) {
-                    Bundle settingsBundle = new Bundle();
-                    settingsBundle.putBoolean(
-                            ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                    settingsBundle.putBoolean(
-                            ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        int i = v.getId();
+        if (i == R.id.sync) {
+            for (Account account : mAccounts) {
+                Bundle settingsBundle = new Bundle();
+                settingsBundle.putBoolean(
+                        ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                settingsBundle.putBoolean(
+                        ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
-                    ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
-                }
+                ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+            }
 
-                updateInfo();
-                break;
-            case R.id.new_layer:
-                mNewLayer.showContextMenu();
-                break;
+            updateInfo();
+
+        } else if (i == R.id.new_layer) {
+            mNewLayer.showContextMenu();
+
         }
     }
 

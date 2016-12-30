@@ -231,59 +231,58 @@ public class MainActivity extends NGActivity
     {
         final IGISApplication app = (IGISApplication) getApplication();
 
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (hasFragments())
-                    return finishFragment();
-                else if (mMapFragment.isEditMode())
-                    return mMapFragment.onOptionsItemSelected(item.getItemId());
-                else {
-                    mLayersFragment.toggle();
-                    return true;
-                }
-            case R.id.menu_settings:
-                app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
-                return true;
-            case R.id.menu_about:
-                Intent intentAbout = new Intent(this, AboutActivity.class);
-                startActivity(intentAbout);
-                return true;
-            case R.id.menu_locate:
-                locateCurrentPosition();
-                return true;
-            case R.id.menu_track:
-                Intent trackerService = new Intent(this, TrackerService.class);
-                trackerService.putExtra(ConstantsUI.TARGET_CLASS, this.getClass().getName());
-
-                int title = R.string.track_start, icon = R.drawable.ic_action_maps_directions_walk;
-                if (isTrackerServiceRunning(this)) {
-                    trackerService.setAction(TrackerService.ACTION_STOP);
-                    startService(trackerService);
-                } else if (hasUnfinishedTracks(this)) {
-                    trackerService.setAction(TrackerService.ACTION_STOP);
-                    startService(trackerService);
-                    trackerService.setAction(null);
-                    startService(trackerService);
-                } else {
-                    startService(trackerService);
-                    title = R.string.track_stop;
-                    icon = R.drawable.ic_action_maps_directions_walk_rec;
-                }
-
-                setTrackItem(item, title, icon);
-                return true;
-            case R.id.menu_refresh:
-                if (null != mMapFragment) {
-                    mMapFragment.refresh();
-                }
-                return true;
-            case R.id.menu_edit_save:
-                return mMapFragment.saveEdits();
-            case R.id.menu_edit_undo:
-            case R.id.menu_edit_redo:
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            if (hasFragments())
+                return finishFragment();
+            else if (mMapFragment.isEditMode())
                 return mMapFragment.onOptionsItemSelected(item.getItemId());
-            default:
-                return super.onOptionsItemSelected(item);
+            else {
+                mLayersFragment.toggle();
+                return true;
+            }
+        } else if (i == R.id.menu_settings) {
+            app.showSettings(SettingsConstantsUI.ACTION_PREFS_GENERAL);
+            return true;
+        } else if (i == R.id.menu_about) {
+            Intent intentAbout = new Intent(this, AboutActivity.class);
+            startActivity(intentAbout);
+            return true;
+        } else if (i == R.id.menu_locate) {
+            locateCurrentPosition();
+            return true;
+        } else if (i == R.id.menu_track) {
+            Intent trackerService = new Intent(this, TrackerService.class);
+            trackerService.putExtra(ConstantsUI.TARGET_CLASS, this.getClass().getName());
+
+            int title = R.string.track_start, icon = R.drawable.ic_action_maps_directions_walk;
+            if (isTrackerServiceRunning(this)) {
+                trackerService.setAction(TrackerService.ACTION_STOP);
+                startService(trackerService);
+            } else if (hasUnfinishedTracks(this)) {
+                trackerService.setAction(TrackerService.ACTION_STOP);
+                startService(trackerService);
+                trackerService.setAction(null);
+                startService(trackerService);
+            } else {
+                startService(trackerService);
+                title = R.string.track_stop;
+                icon = R.drawable.ic_action_maps_directions_walk_rec;
+            }
+
+            setTrackItem(item, title, icon);
+            return true;
+        } else if (i == R.id.menu_refresh) {
+            if (null != mMapFragment) {
+                mMapFragment.refresh();
+            }
+            return true;
+        } else if (i == R.id.menu_edit_save) {
+            return mMapFragment.saveEdits();
+        } else if (i == R.id.menu_edit_undo || i == R.id.menu_edit_redo) {
+            return mMapFragment.onOptionsItemSelected(item.getItemId());
+        } else {
+            return super.onOptionsItemSelected(item);
             /*case R.id.menu_test:
                 //testAttachInsert();
                 //testAttachUpdate();
