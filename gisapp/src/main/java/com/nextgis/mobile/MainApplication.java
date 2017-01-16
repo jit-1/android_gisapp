@@ -163,7 +163,7 @@ public class MainApplication extends GISApplication
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
-        File defaultPath = new File(SettingsConstants.DMS_PATH, SettingsConstants.KEY_PREF_MAP);
+        File defaultPath = new File(SettingsConstants.WORKING_DIR, SettingsConstants.KEY_PREF_MAP);
         if (defaultPath == null) {
             defaultPath = new File(getFilesDir(), SettingsConstants.KEY_PREF_MAP);
         }
