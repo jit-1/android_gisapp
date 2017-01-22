@@ -79,8 +79,11 @@ import com.nextgis.mobile.MainApplication;
 import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
+import com.nextgis.mobile.util.GisFileObserver;
 import com.nextgis.mobile.util.SettingsConstants;
+import com.nextgis.mobile.util.SyncGIS;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
@@ -110,6 +113,8 @@ public class MainActivity extends NGActivity
 
     protected long mBackPressed;
 
+    private GisFileObserver gisFileObserver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -123,6 +128,8 @@ public class MainActivity extends NGActivity
 
         setContentView(R.layout.activity_main);
         mMessageReceiver = new MessageReceiver();
+        gisFileObserver = new GisFileObserver(this);
+        gisFileObserver.startWatching();
 
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
@@ -159,6 +166,14 @@ public class MainActivity extends NGActivity
                     Manifest.permission.GET_ACCOUNTS, Manifest.permission.WRITE_EXTERNAL_STORAGE};
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
+
+        new SyncGIS(this, new File(com.nextgis.maplib.util.SettingsConstants.WORKING_DIR)).syncGisFiles(); ;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        gisFileObserver.stopWatching();
     }
 
     protected boolean hasPermissions() {
@@ -435,6 +450,36 @@ public class MainActivity extends NGActivity
             case IVectorLayerUI.MODIFY_REQUEST:
                 mMapFragment.onActivityResult(requestCode, resultCode, data);
                 break;
+        }
+    }
+
+    public void createLocalLayer(String filePath) {
+        // Get the Uri of the selected file
+        Uri uri = Uri.fromFile(new File(filePath));
+        Log.d("YOLO Create layer", "Over here");
+        if(Constants.DEBUG_MODE)
+            Log.d("YOLO ", "File Uri: " + uri.toString());
+        //check the file type from extension
+        String fileName = FileUtil.getFileNameByUri(this, uri, "");
+        if (fileName.toLowerCase().endsWith("ngrc") ||
+                fileName.toLowerCase().endsWith("zip")) { //create local tile layer
+            Log.d("YOLO LOAD", "zip load korchis bujhi??");
+            if (null != mMapFragment) {
+                mMapFragment.addLocalTMSLayer(uri);
+            }
+        } else if (fileName.toLowerCase().endsWith("geojson")) { //create local vector layer
+            Log.d("YOLO LOAD", "geojson load korchis bujhi??");
+            if (null != mMapFragment) {
+                mMapFragment.addLocalVectorLayer(uri);
+            }
+        } else if (fileName.toLowerCase().endsWith("ngfp")) { //create local vector layer with form
+            if (null != mMapFragment) {
+                mMapFragment.addLocalVectorLayerWithForm(uri);
+            }
+        } else {
+            Toast.makeText(
+                    this, getString(R.string.error_file_unsupported),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
