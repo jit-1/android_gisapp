@@ -456,19 +456,16 @@ public class MainActivity extends NGActivity
     public void createLocalLayer(String filePath) {
         // Get the Uri of the selected file
         Uri uri = Uri.fromFile(new File(filePath));
-        Log.d("YOLO Create layer", "Over here");
         if(Constants.DEBUG_MODE)
-            Log.d("YOLO ", "File Uri: " + uri.toString());
+            Log.d(TAG, "File Uri: " + uri.toString());
         //check the file type from extension
         String fileName = FileUtil.getFileNameByUri(this, uri, "");
         if (fileName.toLowerCase().endsWith("ngrc") ||
                 fileName.toLowerCase().endsWith("zip")) { //create local tile layer
-            Log.d("YOLO LOAD", "zip load korchis bujhi??");
             if (null != mMapFragment) {
                 mMapFragment.addLocalTMSLayer(uri);
             }
         } else if (fileName.toLowerCase().endsWith("geojson")) { //create local vector layer
-            Log.d("YOLO LOAD", "geojson load korchis bujhi??");
             if (null != mMapFragment) {
                 mMapFragment.addLocalVectorLayer(uri);
             }

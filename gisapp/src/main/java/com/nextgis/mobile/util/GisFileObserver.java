@@ -6,8 +6,6 @@ import android.util.Log;
 import com.nextgis.maplib.util.SettingsConstants;
 import com.nextgis.mobile.activity.MainActivity;
 
-import java.io.File;
-
 /**
  * An android FileObserver to check for incoming Gis Files
  * Created by arka on 22/1/17.
@@ -31,7 +29,7 @@ public class GisFileObserver extends FileObserver {
     }
 
     @Override
-    public void onEvent(int event, String path) {
+    public void onEvent(int event, final String path) {
         switch(event){
             case FileObserver.CREATE:
                 Log.d(TAG, "CREATE:" + SettingsConstants.WORKING_DIR + path);
@@ -44,13 +42,24 @@ public class GisFileObserver extends FileObserver {
                 break;
             case FileObserver.MODIFY:
                 Log.d(TAG, "MODIFY:" + SettingsConstants.WORKING_DIR + path);
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainActivity.createLocalLayer(SettingsConstants.WORKING_DIR + path);
+                    }
+                });
                 break;
             case FileObserver.MOVED_FROM:
                 Log.d(TAG, "MOVED_FROM:" + SettingsConstants.WORKING_DIR + path);
                 break;
             case FileObserver.MOVED_TO:
                 Log.d(TAG, "MOVED_TO:" + SettingsConstants.WORKING_DIR + path);
-                mainActivity.createLocalLayer(path);
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainActivity.createLocalLayer(SettingsConstants.WORKING_DIR + path);
+                    }
+                });
                 break;
             case FileObserver.MOVE_SELF:
                 Log.d(TAG, "MOVE_SELF:" + SettingsConstants.WORKING_DIR + path);
