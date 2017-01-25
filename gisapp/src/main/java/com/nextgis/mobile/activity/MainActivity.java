@@ -458,10 +458,15 @@ public class MainActivity extends NGActivity
         Uri uri = Uri.fromFile(new File(filePath));
         if(Constants.DEBUG_MODE)
             Log.d(TAG, "File Uri: " + uri.toString());
+
         //check the file type from extension
         String fileName = FileUtil.getFileNameByUri(this, uri, "");
         if (fileName.toLowerCase().endsWith("ngrc") ||
                 fileName.toLowerCase().endsWith("zip")) { //create local tile layer
+            // check if file is received by peers
+            String name = filePath.substring(filePath.lastIndexOf('/'));
+            String peer = name.split("_")[3];
+
             if (null != mMapFragment) {
                 mMapFragment.addLocalTMSLayer(uri);
             }
@@ -474,9 +479,6 @@ public class MainActivity extends NGActivity
                 mMapFragment.addLocalVectorLayerWithForm(uri);
             }
         } else {
-            Toast.makeText(
-                    this, getString(R.string.error_file_unsupported),
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
