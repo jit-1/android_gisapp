@@ -50,7 +50,7 @@ public class GisFileObserver extends FileObserver {
                 if(mainActivity.isActivityInForeground()) {
                     createLocalLayer(SettingsConstants.WORKING_DIR + path);
                 } else {
-                    // Add layers received to queue if activity is in foreground
+                    // Add layers received to queue if activity is in background
                     if(path.endsWith(".zip") || path.endsWith("ngrc") ||
                             path.endsWith("geojson") || path.endsWith("ngfp")) {
                         gisFilesQueue.add(SettingsConstants.WORKING_DIR + path);
