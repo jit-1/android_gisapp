@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -465,11 +466,21 @@ public class MainActivity extends NGActivity
         String fileName = FileUtil.getFileNameByUri(this, uri, "");
         if (fileName.toLowerCase().endsWith("ngrc") ||
                 fileName.toLowerCase().endsWith("zip")) { //create local tile layer
-            // check if file is received by peers
+
             String name = filePath.substring(filePath.lastIndexOf('/'));
             String peer = name.split("_")[3];
 
-            if (null != mMapFragment) {
+            String source = null;
+            SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+            try {
+                source =  sharedPrefs.getString(com.nextgis.maplib.util.SettingsConstants.PHONE_NO, "NA");
+            } catch (Exception e) {
+                e.printStackTrace();
+                source =  "NA";
+            }
+
+            // load a layer only if it is received by peers
+            if (null != mMapFragment && !source.equals(peer)) {
                 mMapFragment.addLocalTMSLayer(uri);
             }
         } else if (fileName.toLowerCase().endsWith("geojson")) { //create local vector layer
