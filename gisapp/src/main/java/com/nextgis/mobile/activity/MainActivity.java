@@ -114,6 +114,7 @@ public class MainActivity extends NGActivity
     protected long mBackPressed;
 
     private GisFileObserver gisFileObserver;
+    private static boolean isInForeground = false;
 
 
     @Override
@@ -167,6 +168,7 @@ public class MainActivity extends NGActivity
             requestPermissions(R.string.permissions, R.string.requested_permissions, PERMISSIONS_REQUEST, permissions);
         }
 
+        isInForeground = true;
         new SyncGIS(this, new File(com.nextgis.maplib.util.SettingsConstants.WORKING_DIR)).syncGisFiles(); ;
     }
 
@@ -478,7 +480,6 @@ public class MainActivity extends NGActivity
             if (null != mMapFragment) {
                 mMapFragment.addLocalVectorLayerWithForm(uri);
             }
-        } else {
         }
     }
 
@@ -798,6 +799,8 @@ public class MainActivity extends NGActivity
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConstantsUI.MESSAGE_INTENT);
         registerReceiver(mMessageReceiver, intentFilter);
+        isInForeground = true;
+        gisFileObserver.emptyQueue();
     }
 
 
@@ -826,6 +829,7 @@ public class MainActivity extends NGActivity
                 unregisterReceiver(mMessageReceiver);
         } catch (Exception ignored) { }
 
+        isInForeground = false;
         super.onPause();
     }
 
@@ -888,5 +892,9 @@ public class MainActivity extends NGActivity
 
     public void setSubtitle(String subtitle) {
         mToolbar.setSubtitle(subtitle);
+    }
+
+    public boolean isActivityInForeground() {
+        return isInForeground;
     }
 }
