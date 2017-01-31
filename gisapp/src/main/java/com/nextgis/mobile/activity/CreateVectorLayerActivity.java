@@ -71,6 +71,17 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
 
         mFieldAdapter = new FieldAdapter();
         lvFields.setAdapter(mFieldAdapter);
+
+        // Add predefined fields for Surakshit app
+        long time = System.currentTimeMillis();
+        String name = time + "";
+        name = "field_" + name.substring(8);
+        mFieldAdapter.addField(new Field( 0, name, "CONTACT NUMBER"));
+        time = time + 1;
+        name = time + "";
+        name = "field_" + name.substring(8);
+        mFieldAdapter.addField(new Field( 4, name, "TAG"));
+        //mFieldAdapter.addField(new Field( 10, name, "Date & Time"));
     }
 
     @Override
