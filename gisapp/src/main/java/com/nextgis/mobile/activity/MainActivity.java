@@ -82,7 +82,6 @@ import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.GisFileObserver;
 import com.nextgis.mobile.util.SettingsConstants;
-import com.nextgis.mobile.util.SyncGIS;
 
 import java.io.File;
 import java.io.IOException;
@@ -170,7 +169,6 @@ public class MainActivity extends NGActivity
         }
 
         isInForeground = true;
-        new SyncGIS(this, new File(com.nextgis.maplib.util.SettingsConstants.WORKING_DIR)).syncGisFiles(); ;
     }
 
     @Override
