@@ -73,7 +73,7 @@ import static com.nextgis.mobile.util.SettingsConstants.KEY_PREF_GA;
  */
 public class MainApplication extends GISApplication
 {
-    public static final String LAYER_OSM = "osm";
+    public static final String LAYER_OSM = "../Working/osm"; // Currently only keep this in Working dir
     public static final String LAYER_A = "vector_a";
     public static final String LAYER_B = "vector_b";
     public static final String LAYER_C = "vector_c";
@@ -163,7 +163,7 @@ public class MainApplication extends GISApplication
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //File defaultPath = getExternalFilesDir(SettingsConstants.KEY_PREF_MAP);
-        File defaultPath = new File(SettingsConstants.WORKING_DIR, SettingsConstants.KEY_PREF_MAP);
+        File defaultPath = new File(SettingsConstants.DMS_PATH, SettingsConstants.KEY_PREF_MAP);
         if (defaultPath == null) {
             defaultPath = new File(getFilesDir(), SettingsConstants.KEY_PREF_MAP);
         }
