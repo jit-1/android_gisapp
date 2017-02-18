@@ -81,7 +81,9 @@ import com.nextgis.mobile.R;
 import com.nextgis.mobile.fragment.LayersFragment;
 import com.nextgis.mobile.fragment.MapFragment;
 import com.nextgis.mobile.util.GisFileObserver;
+import com.nextgis.mobile.util.GisZipHelper;
 import com.nextgis.mobile.util.SettingsConstants;
+import com.nextgis.mobile.util.SyncGIS;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,6 +117,7 @@ public class MainActivity extends NGActivity
 
     private GisFileObserver gisFileObserver;
     private static boolean isInForeground = false;
+    GisZipHelper gisZipHelper;
 
 
     @Override
@@ -129,6 +132,7 @@ public class MainActivity extends NGActivity
 
         setContentView(R.layout.activity_main);
         mMessageReceiver = new MessageReceiver();
+        gisZipHelper = new GisZipHelper(this, null, null, 1);
         gisFileObserver = new GisFileObserver(this);
         gisFileObserver.startWatching();
 
@@ -169,6 +173,7 @@ public class MainActivity extends NGActivity
         }
 
         isInForeground = true;
+        new SyncGIS(this, new File(com.nextgis.maplib.util.SettingsConstants.WORKING_DIR)).syncGisFiles(gisZipHelper);
     }
 
     @Override
@@ -462,6 +467,9 @@ public class MainActivity extends NGActivity
 
         //check the file type from extension
         String fileName = FileUtil.getFileNameByUri(this, uri, "");
+        // Add the current file in Db
+        gisZipHelper.addDB(fileName);
+
         if (fileName.toLowerCase().endsWith("ngrc") ||
                 fileName.toLowerCase().endsWith("zip")) { //create local tile layer
 

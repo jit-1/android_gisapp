@@ -1,10 +1,16 @@
 package com.nextgis.mobile.util;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.io.File;
 
 /**
+ * Class to keep track of all gis zip files received
  * Created by arka on 3/2/17.
  */
 
@@ -31,5 +37,32 @@ public class GisZipHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void addDB(String zipFileName) {
+        ContentValues values=new ContentValues();
+        values.put(COLUMN_FILE,zipFileName);
+        SQLiteDatabase db=getWritableDatabase();
+        db.insert(TABLE, null, values);
+        db.close();
+        Log.d("YOLO", "INSERTED " + zipFileName);
+    }
 
+    public void deleteDB(String zipFileName) {
+        SQLiteDatabase db=getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE + " WHERE " + COLUMN_FILE+"=\"" + zipFileName + "\";");
+    }
+
+    public boolean searchDB(String zipFileName) {
+        String query = "Select * from " + TABLE + " where " + COLUMN_FILE + " =\"" + zipFileName + "\";";
+        SQLiteDatabase db = getReadableDatabase();
+        Log.d("YOLO", "SEARCHING FOR  " + zipFileName);
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() <= 0) {
+            cursor.close();
+            Log.d("YOLO", "NOT FOUND " + zipFileName);
+            return false;
+        }
+        cursor.close();
+        Log.d("YOLO", "FOUND " + zipFileName);
+        return true;
+    }
 }

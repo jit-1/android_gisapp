@@ -60,10 +60,13 @@ public class SyncGIS {
     /**
      * sync GIS information from peers
      */
-    public void syncGisFiles() {
+    public void syncGisFiles(GisZipHelper gisZipHelper) {
         findGisFiles();
         for (File file : zipGisFiles) {
-            activity.createLocalLayer(file.getAbsolutePath());
+            // load the zip file only if it has not been loaded before
+            if (!gisZipHelper.searchDB(file.getName())) {
+                activity.createLocalLayer(file.getAbsolutePath());
+            }
         }
     }
 }
