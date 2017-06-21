@@ -83,32 +83,32 @@ public class CreateVectorLayerActivity extends NGActivity implements View.OnClic
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_apply:
-                int info = R.string.error_layer_create;
+        int i = item.getItemId();
+        if (i == R.id.menu_apply) {
+            int info = R.string.error_layer_create;
 
-                if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
-                    info = R.string.empty_name;
-                else if (hasLayerWithSameName())
-                    info = R.string.same_layer_name;
-                else if (createNewLayer()) {
-                    info = R.string.message_layer_created;
-                    finish();
-                }
+            if (TextUtils.isEmpty(mEtLayerName.getText().toString().trim()))
+                info = R.string.empty_name;
+            else if (hasLayerWithSameName())
+                info = R.string.same_layer_name;
+            else if (createNewLayer()) {
+                info = R.string.message_layer_created;
+                finish();
+            }
 
-                Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ib_add_field:
-                addNewField();
-                break;
+        int i = v.getId();
+        if (i == R.id.ib_add_field) {
+            addNewField();
+
         }
     }
 

@@ -244,46 +244,49 @@ public class MapFragment
 
     public boolean onOptionsItemSelected(int id) {
         boolean result;
-        switch (id) {
-            case android.R.id.home:
-                cancelEdits();
-                return true;
-            case 0:
-                mMap.setLockMap(false);
-                setMode(MODE_EDIT);
-                return true;
-            case R.id.menu_edit_by_touch:
-                setMode(MODE_EDIT_BY_TOUCH);
-                result = mEditLayerOverlay.onOptionsItemSelected(id);
-                if (result)
-                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
-                return result;
-            case R.id.menu_edit_undo:
-            case R.id.menu_edit_redo:
-                result = mUndoRedoOverlay.onOptionsItemSelected(id);
-                if (result) {
-                    Feature undoRedoFeature = mUndoRedoOverlay.getFeature();
-                    Feature feature = mEditLayerOverlay.getSelectedFeature();
-                    feature.setGeometry(undoRedoFeature.getGeometry());
-                    mEditLayerOverlay.fillDrawItems(undoRedoFeature .getGeometry());
+        if (id == android.R.id.home) {
+            cancelEdits();
+            return true;
+        } else if (id == 0) {
+            mMap.setLockMap(false);
+            setMode(MODE_EDIT);
+            return true;
+        } else if (id == R.id.menu_edit_by_touch) {
+            setMode(MODE_EDIT_BY_TOUCH);
+            result = mEditLayerOverlay.onOptionsItemSelected(id);
+            if (result)
+                mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+            return result;
+        } else if (id == R.id.menu_edit_undo || id == R.id.menu_edit_redo) {
+            result = mUndoRedoOverlay.onOptionsItemSelected(id);
+            if (result) {
+                Feature undoRedoFeature = mUndoRedoOverlay.getFeature();
+                Feature feature = mEditLayerOverlay.getSelectedFeature();
+                feature.setGeometry(undoRedoFeature.getGeometry());
+                mEditLayerOverlay.fillDrawItems(undoRedoFeature.getGeometry());
 
-                    GeoGeometry original = mSelectedLayer.getGeometryForId(feature.getId());
-                    boolean hasEdits = original != null && undoRedoFeature.getGeometry().equals(original);
+                GeoGeometry original = mSelectedLayer.getGeometryForId(feature.getId());
+                boolean hasEdits = original != null && undoRedoFeature.getGeometry().equals(original);
 
-                    mEditLayerOverlay.setHasEdits(!hasEdits);
+                mEditLayerOverlay.setHasEdits(!hasEdits);
 
-                    mMap.buffer();
-                    mMap.postInvalidate();
-                }
+                mMap.buffer();
+                mMap.postInvalidate();
+            }
 
-                return result;
-            case R.id.menu_edit_by_walk:
-                setMode(MODE_EDIT_BY_WALK);
-            default:
-                result = mEditLayerOverlay.onOptionsItemSelected(id);
-                if (result)
-                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
-                return result;
+            return result;
+        } else if (id == R.id.menu_edit_by_walk) {
+            setMode(MODE_EDIT_BY_WALK);
+
+            result = mEditLayerOverlay.onOptionsItemSelected(id);
+            if (result)
+                mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+            return result;
+        } else {
+            result = mEditLayerOverlay.onOptionsItemSelected(id);
+            if (result)
+                mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+            return result;
         }
     }
 
@@ -557,26 +560,26 @@ public class MapFragment
                                 if (mSelectedLayer == null)
                                     return false;
 
-                                switch (item.getItemId()) {
-                                    case R.id.menu_feature_add:
-                                        mEditLayerOverlay.setSelectedFeature(new Feature());
-                                        mEditLayerOverlay.createNewGeometry();
-                                        mUndoRedoOverlay.clearHistory();
-                                        setMode(MODE_EDIT);
-                                        mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
-                                        mEditLayerOverlay.setHasEdits(true);
-                                        break;
-                                    case R.id.menu_feature_edit:
-                                        setMode(MODE_EDIT);
-                                        mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
-                                        mEditLayerOverlay.setHasEdits(false);
-                                        break;
-                                    case R.id.menu_feature_delete:
-                                        deleteFeature();
-                                        break;
-                                    case R.id.menu_feature_attributes:
-                                        setMode(MODE_INFO);
-                                        break;
+                                int i = item.getItemId();
+                                if (i == R.id.menu_feature_add) {
+                                    mEditLayerOverlay.setSelectedFeature(new Feature());
+                                    mEditLayerOverlay.createNewGeometry();
+                                    mUndoRedoOverlay.clearHistory();
+                                    setMode(MODE_EDIT);
+                                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+                                    mEditLayerOverlay.setHasEdits(true);
+
+                                } else if (i == R.id.menu_feature_edit) {
+                                    setMode(MODE_EDIT);
+                                    mUndoRedoOverlay.saveToHistory(mEditLayerOverlay.getSelectedFeature());
+                                    mEditLayerOverlay.setHasEdits(false);
+
+                                } else if (i == R.id.menu_feature_delete) {
+                                    deleteFeature();
+
+                                } else if (i == R.id.menu_feature_attributes) {
+                                    setMode(MODE_INFO);
+
                                 }
 
                                 return true;
@@ -1910,46 +1913,46 @@ public class MapFragment
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fl_compass:
-                showFullCompass();
-                break;
-            case R.id.add_current_location:
-                if (v.isEnabled())
-                    addCurrentLocation();
-                break;
-            case R.id.add_new_geometry:
-                if (v.isEnabled())
-                    addNewGeometry();
-                break;
-            case R.id.add_geometry_by_walk:
-                if (v.isEnabled())
-                    addGeometryByWalk();
-                break;
-            case R.id.action_zoom_in:
-                if (v.isEnabled())
-                    mMap.zoomIn();
-                break;
-            case R.id.action_zoom_out:
-                if (v.isEnabled())
-                    mMap.zoomOut();
-                break;
-            case R.id.add_point_by_tap:
-                if (mRulerOverlay.isMeasuring()) {
-                    mRulerOverlay.stopMeasuring();
-                    showMainButton();
-                    showRulerButton();
-                    hideAddByTapButton();
-                    mAddPointButton.setIcon(R.drawable.ic_action_add_point);
-                    mActivity.setTitle(R.string.app_name);
-                    mActivity.setSubtitle(null);
-                } else
-                    addPointByTap();
-                break;
-            case R.id.action_ruler:
-                startMeasuring();
-                Toast.makeText(getContext(), R.string.tap_to_measure, Toast.LENGTH_SHORT).show();
-                break;
+        int i = v.getId();
+        if (i == R.id.fl_compass) {
+            showFullCompass();
+
+        } else if (i == R.id.add_current_location) {
+            if (v.isEnabled())
+                addCurrentLocation();
+
+        } else if (i == R.id.add_new_geometry) {
+            if (v.isEnabled())
+                addNewGeometry();
+
+        } else if (i == R.id.add_geometry_by_walk) {
+            if (v.isEnabled())
+                addGeometryByWalk();
+
+        } else if (i == R.id.action_zoom_in) {
+            if (v.isEnabled())
+                mMap.zoomIn();
+
+        } else if (i == R.id.action_zoom_out) {
+            if (v.isEnabled())
+                mMap.zoomOut();
+
+        } else if (i == R.id.add_point_by_tap) {
+            if (mRulerOverlay.isMeasuring()) {
+                mRulerOverlay.stopMeasuring();
+                showMainButton();
+                showRulerButton();
+                hideAddByTapButton();
+                mAddPointButton.setIcon(R.drawable.ic_action_add_point);
+                mActivity.setTitle(R.string.app_name);
+                mActivity.setSubtitle(null);
+            } else
+                addPointByTap();
+
+        } else if (i == R.id.action_ruler) {
+            startMeasuring();
+            Toast.makeText(getContext(), R.string.tap_to_measure, Toast.LENGTH_SHORT).show();
+
         }
     }
 
